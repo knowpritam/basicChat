@@ -7,7 +7,9 @@ var authenticate = require('../authenticate');
 var router = express.Router();
 router.use(bodyParser.json());
 
-/* GET users listing. */
+/* GET users listing. 
+* Only admin has the privilege to see this.
+*/
 router.get('/', authenticate.verifyUser, function(req, res, next) {
   if(authenticate.verifyAdmin(req.user.admin)){
     User.find({})
@@ -25,6 +27,7 @@ router.get('/', authenticate.verifyUser, function(req, res, next) {
   }
 });
 
+// users/signup called to register new user
 router.post('/signup', (req, res, next) => {
   console.log(req.body.username);
   User.register(new User({username: req.body.username}), 
@@ -56,6 +59,7 @@ router.post('/signup', (req, res, next) => {
   });
 });
 
+// logs in the user and returns a token which should be saved by the client and passed with each rest call.
 router.post('/login', passport.authenticate('local'), (req, res) => {
   var token = authenticate.getToken({_id: req.user._id});
   res.statusCode = 200;

@@ -9,6 +9,10 @@ const Conversation = require('../models/conversation');
 const conversations = express.Router();
 conversations.use(bodyParser.json());
 
+/**
+ * get on conversations resource will return all the existing conversations
+ * Only admin has access
+ */
 conversations.route('/')
 .get(authenticate.verifyUser, (req, res, next)=> {
     if(authenticate.verifyAdmin(req.user.admin)){
@@ -28,22 +32,20 @@ conversations.route('/')
         next(err);
     }
 })
+/**
+ * Creating a new conversation
+ * User who is part of that conversation (in the payload) can only create this
+ */
 .post(authenticate.verifyUser, (req, res, next) =>{
-    
     var participantIds = req.body.participants;
     console.log(participantIds.length);
     var validUser = false;
     console.log(req.body.participants.length);  
-    var participant = [];
     for(var i =0; i<participantIds.length; i++){
-        console.log(JSON.stringify(participantIds[i].participant));
-        console.log(JSON.stringify(req.user._id));
         if(JSON.stringify(participantIds[i].participant) === JSON.stringify(req.user._id)){
             validUser = true;
         }
-        //participant.push(participantIds[i]._id);
-        req.body.participants[i].participant= participantIds[i].participant;
-        
+        req.body.participants[i].participant= participantIds[i].participant; // setting the participant 
         console.log(req.body);
         console.log('Valid User '+validUser);
     }
@@ -68,6 +70,7 @@ conversations.route('/')
     
 });
 
+// Get conversations for conversationId
 conversations.route('/:conversationId')
 .get(authenticate.verifyUser, (req, res, next)=> {
     console.log('fadfafafa');
@@ -83,8 +86,7 @@ conversations.route('/:conversationId')
         }
 });
 
-
-
+// Get all conversations for a user
 conversations.route('/findConversationForUser/:userId')
 .get((req, res, next) => {
     Conversation.find({ "participants": { $elemMatch: { "participant": ObjectId(req.params.userId)} } })

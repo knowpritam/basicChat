@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+
+  <body style = "padding-left:20px">
+    
+    <div class="container">
+     <br>
+     <div class="jumbotron">
+         
+     <h1 class="display-4">Send Message</h1>
+     <br>
+     <input id = "name" class="form-control" placeholder="Name">
+     <br>
+     <textarea id = "message" class="form-control" placeholder="Your Message Here">
+    </textarea>
+     <br>
+     <button id="send" class="btn btn-success">Send</button>
+     </div>
+     <div id=”messages” class = "messages">
+    </div>
+    </div>
+    
+    <script>
+    var socket = io();
+
+    socket.on('message', addMessages)      
+        $(() => {
+            $("#send").click(()=>{
+            sendMessage({
+                sender: "5ed7cd5be90f29113438e6be", 
+                content:$("#message").val()});
+                })
+            getMessages()
+            })
+            
+        function addMessages(message){
+        $(".messages").append(`<h4> ${message.sender.firstname} </h4>
+            <p>  ${message.content} </p>`)
+        }
+        
+        function getMessages(){
+        $.get('http://localhost:3000/messages/findMessagesForConversation/5ed7ce6fe90f29113438e6c0', (data) => {
+        data.forEach(addMessages);
+        })
+        }
+        
+        function sendMessage(message){
+        $.ajax({
+                url: 'http://localhost:3000/messages/findMessagesForConversation/5ed7ce6fe90f29113438e6c0',
+                method: "POST",
+                dataType: "json",
+                crossDomain: true,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(message),
+                cache: false,
+                async:false,
+                beforeSend: function (xhr) {
+                    /* Authorization header */
+                    xhr.setRequestHeader("Authorization", "bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ3Y2Q1MWU5MGYyOTExMzQzOGU2YmQiLCJpYXQiOjE1OTEyNDM5MjIsImV4cCI6MTU5MTI3OTkyMn0.Bq5Zavm8yHE3S47CHT70sgvtThkxMWUygIECKCBlF8g");
+                },
+                success: function (data) {
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                }
+            });
+        }
+    </script>
+    </body>
+</html>

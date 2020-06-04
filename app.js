@@ -1,4 +1,5 @@
 var createError = require('http-errors');
+var http = require('http');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -7,21 +8,31 @@ var passport = require('passport');
 var authenticate = require('./authenticate');
 var config = require('./config');
 
+// socket io
+var app = express();
+var server = app.listen(3000);
+var io = require('socket.io').listen(server);
+
+// routes
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var conversationsRouter = require('./routes/conversations');
-var messagesRouter = require('./routes/messages');
+var messagesRouter = require('./routes/messages')(io);
 
+// Mongo/mongoose connection
 const mongoose = require('mongoose');
-
 const url = config.mongoUrl;
 const connect = mongoose.connect(url);
 
+// connect to db
 connect.then((db)=>{
   console.log('Connected to db server');
 }, (err)=>console.log(err));
 
-var app = express();
+// connect to socket 
+io.on('connection', () =>{
+  console.log('a user is connected')
+ })
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
