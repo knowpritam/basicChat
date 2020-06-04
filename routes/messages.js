@@ -16,9 +16,10 @@ module.exports = function(io) {
 
     messages.route('/')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-    .get(cors.cors, authenticate.verifyUser, (req, res, next)=> {
+    .get(cors.cors, (req, res, next)=> {
         res.statusCode=200;
         res.setHeader('Content-Type', 'application/json');
+        res.json("{'result':'faddf'}");
     });
 
     // GET on findMessagesForConversation with conversationId will return all the messages for that particulat conversation.

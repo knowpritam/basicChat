@@ -30,6 +30,7 @@ router.get('/', authenticate.verifyUser, function(req, res, next) {
 // users/signup called to register new user
 router.post('/signup', (req, res, next) => {
   console.log(req.body.username);
+  var start = new Date().getTime();
   User.register(new User({username: req.body.username}), 
     req.body.password, (err, user) => {
     if(err) {
@@ -38,6 +39,8 @@ router.post('/signup', (req, res, next) => {
       res.json({err: err});
     }
     else {
+      
+      console.log(start);
       if(req.body.firstname)
         user.firstname = req.body.firstname;
       if(req.body.lastname)
@@ -55,6 +58,9 @@ router.post('/signup', (req, res, next) => {
           res.json({success: true, status: 'Registration Successful!'});
         });
       }); 
+      var end = new Date().getTime();
+      console.log(end);
+      console.log(end-start);
     }
   });
 });

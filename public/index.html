@@ -40,26 +40,26 @@
         $(() => {
             $("#send").click(()=>{
             sendMessage({
-                sender: "5ed7cd5be90f29113438e6be", 
+                sender: "5ed8c5681d7e0f588d10dc30", 
                 content:$("#message").val()});
                 })
             getMessages()
             })
             
         function addMessages(message){
-        $(".messages").append(`<h4> ${message.sender.firstname} </h4>
-            <p>  ${message.content} </p>`)
+        $(".messages").append('<h4>'+ $("#name").val() + '</h4>')
+        $(".messages").append(`<p>  ${message.content} </p>`)
         }
         
         function getMessages(){
-        $.get('http://localhost:3000/messages/findMessagesForConversation/5ed7ce6fe90f29113438e6c0', (data) => {
+        $.get('http://localhost:3000/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33', (data) => {
         data.forEach(addMessages);
         })
         }
         
         function sendMessage(message){
         $.ajax({
-                url: 'http://localhost:3000/messages/findMessagesForConversation/5ed7ce6fe90f29113438e6c0',
+                url: 'http://localhost:3000/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33',
                 method: "POST",
                 dataType: "json",
                 crossDomain: true,
@@ -69,7 +69,7 @@
                 async:false,
                 beforeSend: function (xhr) {
                     /* Authorization header */
-                    xhr.setRequestHeader("Authorization", "bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ3Y2Q1MWU5MGYyOTExMzQzOGU2YmQiLCJpYXQiOjE1OTEyNDM5MjIsImV4cCI6MTU5MTI3OTkyMn0.Bq5Zavm8yHE3S47CHT70sgvtThkxMWUygIECKCBlF8g");
+                    xhr.setRequestHeader("Authorization", "bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ4YzU3YzFkN2UwZjU4OGQxMGRjMzEiLCJpYXQiOjE1OTEyNjUwMjksImV4cCI6MTYyNzI2NTAyOX0.K56-p43I4Y4vzt5miVjI3wfQhBTown60H0XQT8VYkA4");
                 },
                 success: function (data) {
                 },
