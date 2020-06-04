@@ -101,14 +101,14 @@
         }
         
         function getMessages(){
-        $.get('https://gentle-bayou-08991.herokuapp.com//messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33', (data) => {
+        $.get('https://gentle-bayou-08991.herokuapp.com/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33', (data) => {
         data.forEach(addMessages);
         })
         }
         
         function sendMessage(message){
         $.ajax({
-                url: 'https://gentle-bayou-08991.herokuapp.com//messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33',
+                url: 'https://gentle-bayou-08991.herokuapp.com/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33',
                 method: "POST",
                 dataType: "json",
                 crossDomain: true,
