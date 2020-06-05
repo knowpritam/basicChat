@@ -10,7 +10,7 @@ var config = require('./config');
 
 // socket io
 var app = express();
-var server = app.listen(process.env.PORT);
+var server = app.listen(3000);
 console.log(process.env.PORT);
 var io = require('socket.io').listen(server);
 
@@ -30,10 +30,7 @@ connect.then((db)=>{
   console.log('Connected to db server');
 }, (err)=>console.log(err));
 
-// connect to socket 
-io.on('connection', () =>{
-  console.log('a user is connected')
- })
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

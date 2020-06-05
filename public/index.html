@@ -22,39 +22,89 @@
          
      <h1 class="display-4">Send Message</h1>
      <br>
-     <input id = "name" class="form-control" placeholder="Name">
+     <input id = "name" class="form-control" placeholder="UserId">
+     <br>
+     <input id = "conersationId" class="form-control" placeholder="ConversationId">
      <br>
      <textarea id = "message" class="form-control" placeholder="Your Message Here">
     </textarea>
      <br>
+     <button id="login" class="btn btn-success">Login</button>
      <button id="send" class="btn btn-success">Send</button>
      </div>
+     
      <div id=”messages” class = "messages">
     </div>
     </div>
     
-    <!-- <script>
+    <script>
     var socket = io();
-
-    socket.on('message', addMessages)      
+    var sender;
+    var receiver;
+    var socketId;
+    socket.on('connect', () => {
+        console.log(socket.id);
+        socketId = socket.id;// an alphanumeric id...
+        socket.emit('connected',
+        {
+            from: sender,
+            to : receiver,
+            socketId: socket.id
+        })
+    });
+    socket.on('showMessage', addMessages)     
         $(() => {
             $("#send").click(()=>{
-            sendMessage({
-                sender: "5ed8c5681d7e0f588d10dc30", 
-                content:$("#message").val()});
-                })
-            getMessages()
+                addSelfMessages({sender: sender, message: $("#message").val()})
+                socket.emit('messageRecieved',
+                    {
+                        from: sender,
+                        to : receiver,
+                        message: $("#message").val()
+                    }
+                ); 
             })
+        })
+        $(() => 
+        {
+            $("#login").click(() => {
+                console.log('adfadfa');
+                sender = $("#name").val();
+                $.get('http://localhost:3000/conversations/'+$("#conersationId").val(), (data) => {
+                    var partInfo = data;
+                    console.log(partInfo);
+                    var participantsArray = data.participants;
+                    if(JSON.stringify(sender) === JSON.stringify(participantsArray[0]._id)){
+                        receiver = participantsArray[1]._id;
+                    }
+                    else{
+                        receiver = participantsArray[0]._id;
+                    }
+                    socket.emit('login',
+                        {
+                            from: sender,
+                            to : receiver,
+                            socketId: socketId
+                        }
+                    );
+                })
+            })  
+        })
+
             
+        function addSelfMessages(message){
+            $(".messages").append(`<h4 style="color: gray;"> ${message.sender} </h4>`)
+            $(".messages").append(`<p>  ${message.message} </p>`)
+        }   
         function addMessages(message){
-        $(".messages").append('<h4>'+ $("#name").val() + '</h4>')
-        $(".messages").append(`<p>  ${message.content} </p>`)
+            $(".messages").append(`<h4 style="padding-left:400px;color: #429d4c"> ${message.sender} </h4>`)
+            $(".messages").append(`<p style="padding-left:400px;">  ${message.message} </p>`)
         }
         
         function getMessages(){
-        $.get('http://localhost:3000/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33', (data) => {
-        data.forEach(addMessages);
-        })
+            $.get('http://localhost:3000/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33', (data) => {
+                data.forEach(addMessages);
+            })
         }
         
         function sendMessage(message){
@@ -69,56 +119,7 @@
                 async:false,
                 beforeSend: function (xhr) {
                     /* Authorization header */
-                    xhr.setRequestHeader("Authorization", "bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ4YzU3YzFkN2UwZjU4OGQxMGRjMzEiLCJpYXQiOjE1OTEyNjUwMjksImV4cCI6MTYyNzI2NTAyOX0.K56-p43I4Y4vzt5miVjI3wfQhBTown60H0XQT8VYkA4");
-                },
-                success: function (data) {
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-
-                }
-            });
-        }
-    </script> -->
-
-
-
-<script>
-    var socket = io();
-
-    socket.on('message', addMessages)      
-        $(() => {
-            $("#send").click(()=>{
-            sendMessage({
-                sender: "5ed8c5681d7e0f588d10dc30", 
-                content:$("#message").val()});
-                })
-            getMessages()
-            })
-            
-        function addMessages(message){
-        $(".messages").append('<h4>'+ $("#name").val() + '</h4>')
-        $(".messages").append(`<p>  ${message.content} </p>`)
-        }
-        
-        function getMessages(){
-        $.get('https://gentle-bayou-08991.herokuapp.com/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33', (data) => {
-        data.forEach(addMessages);
-        })
-        }
-        
-        function sendMessage(message){
-        $.ajax({
-                url: 'https://gentle-bayou-08991.herokuapp.com/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33',
-                method: "POST",
-                dataType: "json",
-                crossDomain: true,
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(message),
-                cache: false,
-                async:false,
-                beforeSend: function (xhr) {
-                    /* Authorization header */
-                    xhr.setRequestHeader("Authorization", "bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ4YzU2ODFkN2UwZjU4OGQxMGRjMzAiLCJpYXQiOjE1OTEyNzU5NzcsImV4cCI6MTYyNzI3NTk3N30.oUvtjpQPysW4slWCM333aPrmX8CxwWFf3lydp5gRwQY");
+                    xhr.setRequestHeader("Authorization", "bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ3Y2Q1MWU5MGYyOTExMzQzOGU2YmQiLCJpYXQiOjE1OTEzMzM1NjUsImV4cCI6MTYyNzMzMzU2NX0.1UlkeK1gK_26ZmebaDp-6I8Ppb7cA60MNl4vcasb88I");
                 },
                 success: function (data) {
                 },
@@ -128,5 +129,54 @@
             });
         }
     </script>
+
+
+
+// <!-- <script>
+//     var socket = io();
+
+//     socket.on('message', addMessages)      
+//         $(() => {
+//             $("#send").click(()=>{
+//             sendMessage({
+//                 sender: "5ed8c5681d7e0f588d10dc30", 
+//                 content:$("#message").val()});
+//                 })
+//             getMessages()
+//             })
+            
+//         function addMessages(message){
+//         $(".messages").append('<h4>'+ $("#name").val() + '</h4>')
+//         $(".messages").append(`<p>  ${message.content} </p>`)
+//         }
+        
+//         function getMessages(){
+//         $.get('https://gentle-bayou-08991.herokuapp.com/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33', (data) => {
+//         data.forEach(addMessages);
+//         })
+//         }
+        
+//         function sendMessage(message){
+//         $.ajax({
+//                 url: 'https://gentle-bayou-08991.herokuapp.com/messages/findMessagesForConversation/5ed8c73d1d7e0f588d10dc33',
+//                 method: "POST",
+//                 dataType: "json",
+//                 crossDomain: true,
+//                 contentType: "application/json; charset=utf-8",
+//                 data: JSON.stringify(message),
+//                 cache: false,
+//                 async:false,
+//                 beforeSend: function (xhr) {
+//                     /* Authorization header */
+//                     xhr.setRequestHeader("Authorization", "bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ4YzU2ODFkN2UwZjU4OGQxMGRjMzAiLCJpYXQiOjE1OTEyNzU5NzcsImV4cCI6MTYyNzI3NTk3N30.oUvtjpQPysW4slWCM333aPrmX8CxwWFf3lydp5gRwQY");
+//                 },
+//                 success: function (data) {
+//                 },
+//                 error: function (jqXHR, textStatus, errorThrown) {
+
+//                 }
+//             });
+//         }
+//     </script> -->
     </body>
 </html>

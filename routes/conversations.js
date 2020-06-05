@@ -70,11 +70,24 @@ conversations.route('/')
     
 });
 
-// Get conversations for conversationId
+// Get conversations for conversationId, currently commenting the authentication part 
 conversations.route('/:conversationId')
-.get(authenticate.verifyUser, (req, res, next)=> {
+// .get(authenticate.verifyUser, (req, res, next)=> {
+//     console.log('fadfafafa');
+//     if(authenticate.verifyAdmin(req.user.admin)){
+//         Conversation.findById(req.params.conversationId)
+//         .populate('participants.participant')
+//         .then((con) => {
+//             res.statusCode=200;
+//             res.setHeader('Content-Type', 'application/json');
+//             res.json((con));
+//         }, (err)=>next(err))
+//         .catch((err)=>next(err));
+//         }
+// });
+.get((req, res, next)=> {
     console.log('fadfafafa');
-    if(authenticate.verifyAdmin(req.user.admin)){
+ //   if(authenticate.verifyAdmin(req.user.admin)){
         Conversation.findById(req.params.conversationId)
         .populate('participants.participant')
         .then((con) => {
@@ -83,7 +96,7 @@ conversations.route('/:conversationId')
             res.json((con));
         }, (err)=>next(err))
         .catch((err)=>next(err));
-        }
+ //       }
 });
 
 // Get all conversations for a user

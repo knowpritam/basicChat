@@ -13,6 +13,37 @@ module.exports = function(io) {
     var messages = express.Router();
     messages.use(bodyParser.json());
 
+    var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
+    // connect to socket and listen to client actions
+    io.on('connection', function(socket) {
+        console.log('a user is connected');
+        console.log(socket.id);
+        // If the user has logged in and clientgets connected again(i.e. new socket) then we will update socketId for that user in socketMap
+        socket.on('connected', (data) => {
+            console.log('connection data');
+            console.log(data);
+            if(data.from){
+                socketMap.set(data.from, data.socketId)
+            }
+            console.log(socketMap);
+        });
+        //User logs in the client, client passes the socket info and store that in the map
+        socket.on('login', (data) => {
+            console.log('login');
+            console.log(data);
+            if(data.from){
+                socketMap.set(data.from, data.socketId)
+            }
+            console.log(socketMap);
+        });
+        //User send a message, msg gets broadcasted to the receiver
+        socket.on('messageRecieved', (data) => {
+            console.log('message');
+            console.log(socketMap.get(data.from));
+            socket.broadcast.to(socketMap.get(data.to)).emit('showMessage', {sender: data.from, message: data.message});
+        });
+    });
+    
 
     messages.route('/')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
@@ -56,7 +87,8 @@ module.exports = function(io) {
             .then((mess) => {
                 console.log('Message Created');
                 res.statusCode=200;
-                io.emit('message', mess); // emitting the message to socket so that the UI reads this and shows the message immediately
+                io.broadcast.to('priv/John').emit('message', mess);
+                //io.emit('message', mess); // emitting the message to socket so that the UI reads this and shows the message immediately
                 res.setHeader('Content-Type', 'application/json');
                 res.json((mess));
             })
