@@ -77,11 +77,11 @@
                     var partInfo = data;
                     console.log(partInfo);
                     var participantsArray = data.participants;
-                    if(JSON.stringify(sender) === JSON.stringify(participantsArray[0]._id)){
-                        receiver = participantsArray[1]._id;
+                    if(JSON.stringify(sender) === JSON.stringify(participantsArray[0].participant._id)){
+                        receiver = participantsArray[1].participant._id;
                     }
                     else{
-                        receiver = participantsArray[0]._id;
+                        receiver = participantsArray[0].participant._id;
                     }
                     socket.emit('login',
                         {
