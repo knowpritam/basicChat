@@ -42,6 +42,9 @@
     var sender;
     var receiver;
     var socketId;
+
+    var baseurl = window.location.origin;
+
     socket.on('connect', () => {
         console.log(socket.id);
         socketId = socket.id;// an alphanumeric id...
@@ -70,7 +73,7 @@
             $("#login").click(() => {
                 console.log('adfadfa');
                 sender = $("#name").val();
-                $.get('http://localhost:3000/conversations/'+$("#conersationId").val(), (data) => {
+                $.get(baseurl+'/conversations/'+$("#conersationId").val(), (data) => {
                     var partInfo = data;
                     console.log(partInfo);
                     var participantsArray = data.participants;
