@@ -39,8 +39,9 @@ module.exports = function(io) {
         //User send a message, msg gets broadcasted to the receiver
         socket.on('messageRecieved', (data) => {
             console.log('message');
-            console.log(socketMap.get(data.from));
+            console.log(socketMap.get(data.to));
             socket.broadcast.to(socketMap.get(data.to)).emit('showMessage', {sender: data.from, message: data.message});
+            socket.broadcast.to(socketMap.get(data.from)).emit('showMessage', {sender: data.from, message: data.message});
         });
     });
     
