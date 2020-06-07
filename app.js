@@ -10,7 +10,8 @@ var config = require('./config');
 
 // socket io
 var app = express();
-var server = app.listen(process.env.PORT);
+//var server = app.listen(process.env.PORT);
+var server = app.listen(3000);
 console.log(process.env.PORT);
 var io = require('socket.io').listen(server);
 

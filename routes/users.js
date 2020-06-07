@@ -45,6 +45,8 @@ router.post('/signup', (req, res, next) => {
         user.firstname = req.body.firstname;
       if(req.body.lastname)
         user.lastname = req.body.lastname;
+      if(req.body.phone)
+        user.phone = req.body.phone;
       user.save((err, user) => {
         if(err){
           res.statusCode = 500;
@@ -71,6 +73,24 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
   res.json({success: true, _id: req.user._id, token: token, status: 'You are successfully logged in!'});
+});
+
+// logs in the user and returns a token which should be saved by the client and passed with each rest call.
+router.post('/findActiveUsers', (req, res) => {
+  var phone = req.body.phone;
+  var numArray = [];
+  for(var i =0; i<phone.length; i++){
+    numArray.push(phone[i].number);
+  }
+  console.log(numArray);
+  User.find({"phone" : { "$in" : numArray}})
+    .then((users) => {
+        console.log(users);
+        res.statusCode=200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json((users));
+    }, (err)=>next(err))
+    .catch((err)=>next(err));
 });
 
 router.get('/logout', (req, res) => {
