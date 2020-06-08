@@ -112,4 +112,45 @@ conversations.route('/findConversationForUser/:userId')
     .catch((err)=>next(err));
 });
 
+// Get all conversations for two user
+conversations.route('/findConversationForUsers')
+.post(authenticate.verifyUser, (req, res, next) =>{
+    var participantIds = req.body.participants;
+    console.log(participantIds.length);
+    var validUser = false;
+    var userIdArray = [];
+    console.log(req.body.participants.length);  
+    for(var i =0; i<participantIds.length; i++){
+        if(JSON.stringify(participantIds[i].participant) === JSON.stringify(req.user._id)){
+            validUser = true;
+        }
+        userIdArray.push(participantIds[i].participant);
+        console.log(JSON.stringify(userIdArray[i]));
+        console.log('Valid User '+validUser);
+    }
+    //req.body.participants.participant = participant;
+    //console.log(req.body);
+    if(validUser){
+        Conversation.find({
+            $and: [
+                 { "participants": { $elemMatch: { "participant": ObjectId(userIdArray[0])} } },
+                 { "participants": { $elemMatch: { "participant": ObjectId(userIdArray[1])} } }
+            ]
+        })
+        .populate('participants.participant')
+        .then((con) => {
+            res.statusCode=200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json((con));
+        }, (err)=>next(err))
+        .catch((err)=>next(err));
+    }
+    else{
+        var err = new Error('You are not authorized');
+        err.status = 401;
+        next(err);
+    }
+    
+});
+
 module.exports = conversations;
