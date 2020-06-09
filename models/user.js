@@ -12,7 +12,7 @@ var User = new Schema({
         default: ''
     },
     phone: {
-        type: Number,
+        type: String,
         default: 0
     },
     admin:   {
