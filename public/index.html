@@ -59,7 +59,7 @@
         $(() => {
             $("#send").click(()=>{
                 addSelfMessages({sender: sender, message: $("#message").val()})
-                socket.emit('messageRecieved',
+                socket.emit('single_chat_message',
                     {
                         from: sender,
                         to : receiver,
