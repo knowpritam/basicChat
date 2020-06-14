@@ -53,28 +53,28 @@ module.exports = function(io) {
         console.log('a user is connected');
         console.log(socket.id);
         // If the user has logged in and clientgets connected again(i.e. new socket) then we will update socketId for that user in socketMap
-        socket.on('connected', (data) => {
-            console.log('connection data');
-            console.log(data);
-            if(data.from){
-                socketMap.set(data.from, data.socketId)
-            }
-            console.log(socketMap);
-        });
-        //User logs in the client, client passes the socket info and store that in the map
-        socket.on('login', (data) => {
-            console.log('login');
-            console.log(data);
-            if(data.from){
-                socketMap.set(data.from, data.socketId)
-            }
-            console.log(socketMap);
-        });
+        // socket.on('connected', (data) => {
+        //     console.log('connection data');
+        //     console.log(data);
+        //     if(data.from){
+        //         socketMap.set(data.from, data.socketId)
+        //     }
+        //     console.log(socketMap);
+        // });
+        // User logs in the client, client passes the socket info and store that in the map
+        // socket.on('login', (data) => {
+        //     console.log('login');
+        //     console.log(data);
+        //     if(data.from){
+        //         socketMap.set(data.from, data.socketId)
+        //     }
+        //     console.log(socketMap);
+        // });
         //User send a message, msg gets broadcasted to the receiver
         socket.on('chat_direct', (data) => {
             console.log(data);
             console.log('message');
-            socket.emit(data);
+            socket.emit("Message recieved");
         });
     });
     
