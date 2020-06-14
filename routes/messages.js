@@ -32,7 +32,7 @@ module.exports = function(io) {
             console.log('login');
             console.log(data);
             if(data.userId){
-                socketMap.set(data.userId, data.socketId)
+                socketMap.set(data.userId, socket.id)
             }
             console.log(socketMap);
         });
