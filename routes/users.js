@@ -10,8 +10,8 @@ router.use(bodyParser.json());
 /* GET users listing. 
 * Only admin has the privilege to see this.
 */
-router.get('/', authenticate.verifyUser, function(req, res, next) {
-  if(authenticate.verifyAdmin(req.user.admin)){
+router.get('/', function(req, res, next) {
+  //if(authenticate.verifyAdmin(req.user.admin)){
     User.find({})
     .then((user)=>{
         res.statusCode=200;
@@ -19,12 +19,12 @@ router.get('/', authenticate.verifyUser, function(req, res, next) {
         res.json((user));
     }, (err)=>next(err))
     .catch((err)=>next(err));
-  }
-  else{
-    var err = new Error('You are not authorized');
-    err.status = 401;
-    next(err);
-  }
+ // }
+  // else{
+  //   var err = new Error('You are not authorized');
+  //   err.status = 401;
+  //   next(err);
+  // }
 });
 
 // users/signup called to register new user
