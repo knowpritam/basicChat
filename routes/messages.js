@@ -75,6 +75,7 @@ module.exports = function(io) {
             console.log(data);
             console.log('message');
             socket.emit('chat_direct', 'Message recieved');
+            socket.io.emit('chat_direct', 'Message recieved');
             console.log('message sent');
         });
     });
