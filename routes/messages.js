@@ -74,7 +74,7 @@ module.exports = function(io) {
         socket.on('chat_direct', (data) => {
             console.log(data);
             console.log('message');
-            socket.emit('chat_direct', 'Message recieved');
+            io.sockets.emit('chat_direct', 'Message recieved');
             //socket.io.emit('chat_direct', 'Message recieved');
             console.log('message sent');
         });
