@@ -19,7 +19,7 @@ var io = require('socket.io').listen(server);
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var conversationsRouter = require('./routes/conversations');
-var socketRouter = require('./routes/sockets')(io);
+//var socketRouter = require('./routes/sockets')(io);
 var messagesRouter = require('./routes/messages')(io);
 
 // Mongo/mongoose connection
@@ -49,7 +49,7 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/conversations', conversationsRouter);
-app.use('/sockets', socketRouter);
+//app.use('/sockets', socketRouter);
 app.use('/messages', messagesRouter);
 
 // catch 404 and forward to error handler
