@@ -41,8 +41,8 @@ module.exports = function(io) {
             console.log(data);
             console.log('message');
             console.log(socketMap.get(data.to));
-            socket.broadcast.to(socketMap.get(data.to)).emit('showMessage', data);
-            socket.broadcast.to(socketMap.get(data.from)).emit('showMessage', data);
+            socket.broadcast.to(socketMap.get(data.to)).emit('chat_direct', data);
+            socket.broadcast.to(socketMap.get(data.from)).emit('chat_direct', data);
         });
     });
     
