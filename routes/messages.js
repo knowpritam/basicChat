@@ -13,72 +13,72 @@ module.exports = function(io) {
     var messages = express.Router();
     messages.use(bodyParser.json());
 
-    // var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
-    // // connect to socket and listen to client actions
-    // io.on('connection', function(socket) {
-    //     console.log('a user is connected');
-    //     console.log(socket.id);
-    //     // If the user has logged in and clientgets connected again(i.e. new socket) then we will update socketId for that user in socketMap
-    //     socket.on('connected', (data) => {
-    //         console.log('connection data');
-    //         console.log(data);
-    //         if(data.from){
-    //             socketMap.set(data.from, data.socketId)
-    //         }
-    //         console.log(socketMap);
-    //     });
-    //     //User logs in the client, client passes the socket info and store that in the map
-    //     socket.on('login', (data) => {
-    //         console.log('login');
-    //         console.log(data);
-    //         if(data.from){
-    //             socketMap.set(data.from, data.socketId)
-    //         }
-    //         console.log(socketMap);
-    //     });
-    //     //User send a message, msg gets broadcasted to the receiver
-    //     socket.on('messageRecieved', (data) => {
-    //         console.log(data);
-    //         console.log('message');
-    //         console.log(socketMap.get(data.to));
-    //         socket.broadcast.to(socketMap.get(data.to)).emit('showMessage', {sender: data.from, message: data.message});
-    //         socket.broadcast.to(socketMap.get(data.from)).emit('showMessage', {sender: data.from, message: data.message});
-    //     });
-    // });
-    
-
     var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
     // connect to socket and listen to client actions
     io.on('connection', function(socket) {
         console.log('a user is connected');
         console.log(socket.id);
         // If the user has logged in and clientgets connected again(i.e. new socket) then we will update socketId for that user in socketMap
-        // socket.on('connected', (data) => {
-        //     console.log('connection data');
-        //     console.log(data);
-        //     if(data.from){
-        //         socketMap.set(data.from, data.socketId)
-        //     }
-        //     console.log(socketMap);
-        // });
-        // User logs in the client, client passes the socket info and store that in the map
-        // socket.on('login', (data) => {
-        //     console.log('login');
-        //     console.log(data);
-        //     if(data.from){
-        //         socketMap.set(data.from, data.socketId)
-        //     }
-        //     console.log(socketMap);
-        // });
+        socket.on('connected', (data) => {
+            console.log('connection data');
+            console.log(data);
+            // if(data.from){
+            //     socketMap.set(data.userId, socket.id)
+            // }
+            // console.log(socketMap);
+        });
+        //User logs in the client, client passes the socket info and store that in the map
+        socket.on('login', (data) => {
+            console.log('login');
+            console.log(data);
+            if(data.userId){
+                socketMap.set(data.userId, data.socketId)
+            }
+            console.log(socketMap);
+        });
         //User send a message, msg gets broadcasted to the receiver
         socket.on('chat_direct', (data) => {
             console.log(data);
             console.log('message');
-            io.sockets.emit('chat_direct', data.message);
-            //socket.io.emit('chat_direct', 'Message recieved');
-            console.log('message sent');
+            console.log(socketMap.get(data.to));
+            socket.broadcast.to(socketMap.get(data.to)).emit('showMessage', data);
+            socket.broadcast.to(socketMap.get(data.from)).emit('showMessage', data);
         });
     });
+    
+
+    // var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
+    // // connect to socket and listen to client actions
+    // io.on('connection', function(socket) {
+    //     console.log('a user is connected');
+    //     console.log(socket.id);
+    //     // If the user has logged in and clientgets connected again(i.e. new socket) then we will update socketId for that user in socketMap
+    //     // socket.on('connected', (data) => {
+    //     //     console.log('connection data');
+    //     //     console.log(data);
+    //     //     if(data.from){
+    //     //         socketMap.set(data.from, data.socketId)
+    //     //     }
+    //     //     console.log(socketMap);
+    //     // });
+    //     // User logs in the client, client passes the socket info and store that in the map
+    //     // socket.on('login', (data) => {
+    //     //     console.log('login');
+    //     //     console.log(data);
+    //     //     if(data.from){
+    //     //         socketMap.set(data.from, data.socketId)
+    //     //     }
+    //     //     console.log(socketMap);
+    //     // });
+    //     //User send a message, msg gets broadcasted to the receiver
+    //     socket.on('chat_direct', (data) => {
+    //         console.log(data);
+    //         console.log('message');
+    //         io.sockets.emit('chat_direct', data.message);
+    //         //socket.io.emit('chat_direct', 'Message recieved');
+    //         console.log('message sent');
+    //     });
+    // });
     
 
     messages.route('/')
