@@ -44,7 +44,7 @@ module.exports = function(io) {
             //socket.broadcast.to(socketMap.get(data.to)).emit('chat_direct', data);
             //socket.broadcast.to(socketMap.get(data.from)).emit('chat_direct', data);
             io.sockets.in(socketMap.get(data.to)).emit('chat_direct', data);
-            io.sockets.in(socketMap.get(data.from)).emit('chat_direct', data);
+            //io.sockets.in(socketMap.get(data.from)).emit('chat_direct', data);
             //io.sockets.emit('chat_direct', data);
         });
     });
