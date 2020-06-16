@@ -40,10 +40,10 @@ module.exports = function(io) {
         socket.on('chat_direct', (data) => {
             console.log(data);
             console.log('message');
-            console.log(socketMap.get(data.to));
+            console.log(socketMap.get(data.toId));
             //socket.broadcast.to(socketMap.get(data.to)).emit('chat_direct', data);
             //socket.broadcast.to(socketMap.get(data.from)).emit('chat_direct', data);
-            io.sockets.in(socketMap.get(data.to)).emit('chat_direct', data);
+            io.sockets.in(socketMap.get(data.toId)).emit('chat_direct', data);
             //io.sockets.in(socketMap.get(data.from)).emit('chat_direct', data);
             //io.sockets.emit('chat_direct', data);
         });
