@@ -13,7 +13,8 @@ module.exports = function(io) {
     var messages = express.Router();
     messages.use(bodyParser.json());
 
-    var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
+    var userSocketMap = new Map(); // store userId and  socketId so that server can send messages easily.
+    var socketUserMap = new Map(); // store socketId and  userId ti beused to clear the user from userSocketMap in case of disconnection.
     // connect to socket and listen to client actions
     io.on('connection', function(socket) {
         console.log('a user is connected');
@@ -27,26 +28,53 @@ module.exports = function(io) {
             // }
             // console.log(socketMap);
         });
+        // If the user disconnects then we will remove the user and socket from maps.
+        socket.on('disconnect', function () {
+            console.log('Disconnected ' + socket.id);
+            var userToClean = socketUserMap.get(socket.id);
+            userSocketMap.delete(userToClean);
+            socketUserMap.delete(socket.id);
+            console.log(userSocketMap);
+            console.log(socketUserMap);
+        });
+
         //User logs in the client, client passes the socket info and store that in the map
         socket.on('login', (data) => {
             console.log('login');
             console.log(data);
             if(data.userId){
-                socketMap.set(data.userId, socket.id)
+                userSocketMap.set(data.userId, socket.id)
+                socketUserMap.set(socket.id, data.userId);
             }
-            console.log(socketMap);
+            console.log(userSocketMap);
+            console.log(socketUserMap);
         });
         //User send a message, msg gets broadcasted to the receiver
         socket.on('chat_direct', (data) => {
             console.log(data);
             console.log('message');
-            console.log(socketMap.get(data.toId));
+            console.log(userSocketMap.get(data.toId));
             //socket.broadcast.to(socketMap.get(data.to)).emit('chat_direct', data);
             //socket.broadcast.to(socketMap.get(data.from)).emit('chat_direct', data);
-            io.sockets.in(socketMap.get(data.toId)).emit('chat_direct', data);
-            io.sockets.in(socketMap.get(data.toId)).emit('chat_indirect', data);
-            //io.sockets.in(socketMap.get(data.from)).emit('chat_direct', data);
-            //io.sockets.emit('chat_direct', data);
+            if(userSocketMap.get(data.toId)){
+                io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct', data);
+                io.sockets.in(userSocketMap.get(data.toId)).emit('chat_indirect', data);
+                //io.sockets.in(socketMap.get(data.from)).emit('chat_direct', data);
+                //io.sockets.emit('chat_direct', data);
+            }
+            else{ // save the messages received to server db and send it back when the receiver is online
+                console.log('Saving offline data');
+                console.log(JSON.stringify(data));
+                Message.create(data) // creating the message
+                .then((message)=>{
+                    Message.findById(message._id)
+                    .then((mess) => {
+                        console.log('Message Created');
+                    })
+                    
+                });
+            }
+            
         });
     });
     
@@ -98,10 +126,7 @@ module.exports = function(io) {
     messages.route('/findMessagesForConversation/:conversationId')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(cors.cors, (req, res, next) => {
-        Message.find({ "conversationId": ObjectId(req.params.conversationId)})
-        .populate('sender')
-        .populate('conversationId')
-        .populate('conversationId.participants.participant')
+        Message.find({ "chatId": ObjectId(req.params.conversationId)})
         .then((message) => {
             //console.log(message);
             res.statusCode=200;
@@ -119,10 +144,10 @@ module.exports = function(io) {
     }
      */
     .post(authenticate.verifyUser, (req, res, next) => {
-        req.body.conversationId = req.params.conversationId;
+        req.body.chat = req.params.chat;
         Message.create(req.body) // creating the message
         .then((message)=>{
-            Message.findById(message._id) // getting the message again so that we can populate the sender info to be shown on the UI
+            Message.findById(messageText._id) // getting the message again so that we can populate the sender info to be shown on the UI
             .populate('sender')
             .then((mess) => {
                 console.log('Message Created');
@@ -136,5 +161,18 @@ module.exports = function(io) {
         }, (err)=>next(err))
         .catch((err)=>next(err));
     });
+    
+    messages.route('/findMessagesForUser/:userId')
+    .get((req, res, next) => {
+        Message.find({ "toId": req.params.userId })
+        .then((message) => {
+            res.statusCode=200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json((message));
+        }, (err)=>next(err))
+        .catch((err)=>next(err));
+    });
+
+
     return messages;
 }

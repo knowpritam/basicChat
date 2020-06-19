@@ -2,18 +2,39 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Messages = new Schema ({
-    sender: {
-        type : mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+    chatId: {
+        type : String,
+        default: ''
     },
-    content: {
+    toId:   {
+        type : String,
+        default: ''
+    },
+    fromId:   {
+        type : String,
+        default: ''
+    },
+    fromName: {
         type: String,
         default: ''
     },
-    conversationId:   {
-        type : mongoose.Schema.Types.ObjectId,
-        ref: 'Conversation'
-    }
+    toName: {
+        type: String,
+        default: ''
+    },
+    messageText: {
+        type: String,
+        default: ''
+    },
+    chatType: {
+        type: String,
+        default: ''
+    },
+    timestamp: {
+        type: String,
+        default: ''
+    },
+
 },
     {
         timestamps:true

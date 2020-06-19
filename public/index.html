@@ -45,6 +45,29 @@
 
     var baseurl = window.location.origin;
 
+    var m1 = {
+                        chatId: "!11",
+                        toId : 'adfdafad',
+                        fromId: $("#message").val(),
+                        toName: "!11",
+                        fromName : 'adfdafad',
+                        messageText: $("#message").val(),
+                        chatType: "!11",
+                        timestamp : 'adfdafad'
+                    };
+    var m2 = {
+                        chatId: "!11",
+                        toId : 'adfdafad',
+                        fromId: $("#message").val(),
+                        toName: "!11",
+                        fromName : 'adfdafad',
+                        messageText: $("#message").val(),
+                        chatType: "!11",
+                        timestamp : 'adfdafad'
+                    };
+    var ls = [];
+    ls.push(m1);
+    ls.push(m2);
     socket.on('connect', () => {
         console.log(socket.id);
         socketId = socket.id;// an alphanumeric id...
@@ -59,13 +82,7 @@
         $(() => {
             $("#send").click(()=>{
                 addSelfMessages({sender: sender, message: $("#message").val()})
-                socket.emit('single_chat_message',
-                    {
-                        from: sender,
-                        to : receiver,
-                        message: $("#message").val()
-                    }
-                ); 
+                socket.emit('chat_direct',ls); 
             })
         })
         $(() => 
