@@ -30,7 +30,7 @@ var Messages = new Schema ({
         type: String,
         default: ''
     },
-    timestamp: {
+    timeStamp: {
         type: String,
         default: ''
     },
