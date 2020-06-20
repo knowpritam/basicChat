@@ -26,7 +26,7 @@ var Messages = new Schema ({
         type: String,
         default: ''
     },
-    chatType: {
+    chatType: { 
         type: String,
         default: ''
     },

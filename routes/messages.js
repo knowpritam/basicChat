@@ -161,7 +161,7 @@ module.exports = function(io) {
         }, (err)=>next(err))
         .catch((err)=>next(err));
     });
-    
+      
     messages.route('/messagesForUser/:userId')
     .get(authenticate.verifyUser, (req, res, next) => {
         Message.find({ "toId": req.params.userId }).sort({"createdAt":-1})
