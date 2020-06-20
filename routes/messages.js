@@ -162,9 +162,9 @@ module.exports = function(io) {
         .catch((err)=>next(err));
     });
     
-    messages.route('/findMessagesForUser/:userId')
+    messages.route('/messagesForUser/:userId')
     .get((req, res, next) => {
-        Message.find({ "toId": req.params.userId })
+        Message.find({ "toId": req.params.userId }).sort({"createdAt":-1})
         .then((message) => {
             res.statusCode=200;
             res.setHeader('Content-Type', 'application/json');
