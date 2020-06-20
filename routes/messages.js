@@ -163,12 +163,21 @@ module.exports = function(io) {
     });
     
     messages.route('/messagesForUser/:userId')
-    .get((req, res, next) => {
+    .get(authenticate.verifyUser, (req, res, next) => {
         Message.find({ "toId": req.params.userId }).sort({"createdAt":-1})
         .then((message) => {
             res.statusCode=200;
             res.setHeader('Content-Type', 'application/json');
             res.json((message));
+        }, (err)=>next(err))
+        .catch((err)=>next(err));
+    })
+    .delete(authenticate.verifyUser, (req , res, next) => {
+        Message.remove({"toId": req.params.userId})
+        .then((resp)=>{
+            res.statusCode=200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json((resp));
         }, (err)=>next(err))
         .catch((err)=>next(err));
     });
