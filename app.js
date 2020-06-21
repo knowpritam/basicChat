@@ -14,8 +14,8 @@ var server = app.listen(process.env.PORT);
 //var server = app.listen(3000);
 console.log(process.env.PORT);
 var io = require('socket.io')(server, {
-  pingInterval: 5000,
-  pingTimeout: 5000,
+  pingInterval: 2000,
+  pingTimeout: 2000,
   cookie: false
 });
 
