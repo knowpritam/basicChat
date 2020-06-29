@@ -72,7 +72,7 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
   var token = authenticate.getToken({_id: req.user._id});
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
-  res.json({success: true, _id: req.user._id, firstname:req.user.firstname, lastname:req.user.lastname, token: token, status: 'You are successfully logged in!'});
+  res.json({success: true, _id: req.user._id, firstname:req.user.firstname, lastname:req.user.lastname, phone:req.user.phone, token: token, status: 'You are successfully logged in!'});
 });
 
 // logs in the user and returns a token which should be saved by the client and passed with each rest call.
