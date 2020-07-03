@@ -81,6 +81,7 @@ module.exports = function(io) {
             console.log(data.toId);
             console.log(data.fromId);
             var messages = getMessageFromUserForUser(data.fromId, data.toId);
+            
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct_old', messages);
                 Message.remove({"toId": data.toId ,"fromId" : data.fromId}).then(() =>{
@@ -94,6 +95,8 @@ module.exports = function(io) {
         var result;
         Message.find({ "toId": to ,"fromId" : from}).sort({"createdAt":-1})
         .then((messages) => {
+            console.log('message data');
+            console.log(messages);
             result = messages;
         }, (err)=>next(err))
         .catch((err)=>next(err));
