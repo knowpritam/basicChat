@@ -93,7 +93,7 @@ module.exports = function(io) {
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct_old', messages);
             }
-            Message.remove({"toId": data.toId ,"fromId" : data.fromId}).then(() =>{
+            Message.remove({"toId": to ,"fromId" : from}).then(() =>{
                 console.log('Message deleted');
             });
         }, (err)=>next(err))
