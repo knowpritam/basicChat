@@ -98,7 +98,8 @@ module.exports = function(io) {
             result = messages;
             Message.remove({"toId": data.toId ,"fromId" : data.fromId}).then(() =>{
                 console.log('Message deleted');
-            });
+            }, (err)=>next(err))
+            .catch((err)=>next(err));
         }, (err)=>next(err))
         .catch((err)=>next(err));
         console.log('messages---');
