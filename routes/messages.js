@@ -78,6 +78,8 @@ module.exports = function(io) {
         });
         socket.on('chat_direct_old', (data) => {
             console.log('chat_direct_old');
+            console.log(data.toId);
+            console.log(data.fromId);
             var messages = getMessageFromUserForUser(data.fromId, data.toId);
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct_old', messages);
