@@ -76,8 +76,26 @@ module.exports = function(io) {
             }
             
         });
+        socket.on('chat_direct_old', (data) => {
+            console.log('chat_direct_old');
+            var messages = this.getMessageFromUserForUser(data.fromId, data.toId);
+            if(userSocketMap.get(data.toId)){
+                io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct_old', messages);
+            }
+        });
     });
     
+    function getMessageFromUserForUser(from, to){
+        var result;
+        Message.find({ "toId": to ,"fromId" : from}).sort({"createdAt":-1})
+        .then((messages) => {
+            result = messages;
+        }, (err)=>next(err))
+        .catch((err)=>next(err));
+        console.log('messages---');
+        console.log(result);
+        return result;
+    };
 
     // var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
     // // connect to socket and listen to client actions
