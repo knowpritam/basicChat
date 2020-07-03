@@ -78,9 +78,12 @@ module.exports = function(io) {
         });
         socket.on('chat_direct_old', (data) => {
             console.log('chat_direct_old');
-            var messages = this.getMessageFromUserForUser(data.fromId, data.toId);
+            var messages = getMessageFromUserForUser(data.fromId, data.toId);
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct_old', messages);
+                Message.remove({"toId": data.toId ,"fromId" : data.fromId}).then(() =>{
+                    console.log('Message deleted');
+                });
             }
         });
     });
@@ -96,7 +99,7 @@ module.exports = function(io) {
         console.log(result);
         return result;
     };
-
+    module.exports.getMessageFromUserForUser = getMessageFromUserForUser; 
     // var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
     // // connect to socket and listen to client actions
     // io.on('connection', function(socket) {
