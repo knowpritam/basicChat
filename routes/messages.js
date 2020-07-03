@@ -96,8 +96,7 @@ module.exports = function(io) {
             Message.remove({"toId": to ,"fromId" : from}).then(() =>{
                 console.log('Message deleted');
             });
-        }, (err)=>next(err))
-        .catch((err)=>next(err));
+        });
         console.log('messages---');
     };
     module.exports.getMessageFromUserForUser = getMessageFromUserForUser; 
