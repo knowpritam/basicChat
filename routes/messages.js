@@ -79,7 +79,7 @@ module.exports = function(io) {
         socket.on('chat_direct_old', (data) => {
             console.log('chat_direct_old');
             
-            var messages = getMessageFromUserForUser(data.fromId, data.toId);
+            var messages = getMessageFromUserForUser(data);
             
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct_old', messages);
@@ -87,11 +87,11 @@ module.exports = function(io) {
         });
     });
     
-    function getMessageFromUserForUser(from, to){
+    function getMessageFromUserForUser(data){
         //var result;
         console.log(to);
         console.log(from);
-        Message.find({ "toId": to ,"fromId" : from}).sort({"createdAt":-1})
+        Message.find({ "toId": data.toId ,"fromId" : data.fromId}).sort({"createdAt":-1})
         .then((messages) => {
             console.log('message data');
             console.log(messages);
