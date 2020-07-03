@@ -89,8 +89,8 @@ module.exports = function(io) {
     
     function getMessageFromUserForUser(data){
         //var result;
-        console.log(to);
-        console.log(from);
+        console.log(data.toId);
+        console.log(data.fromId);
         Message.find({ "toId": data.toId ,"fromId" : data.fromId}).sort({"createdAt":-1})
         .then((messages) => {
             console.log('message data');
