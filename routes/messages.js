@@ -99,7 +99,6 @@ module.exports = function(io) {
         }, (err)=>next(err))
         .catch((err)=>next(err));
         console.log('messages---');
-        console.log(result);
         return result;
     };
     module.exports.getMessageFromUserForUser = getMessageFromUserForUser; 
