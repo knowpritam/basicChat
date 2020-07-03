@@ -99,7 +99,6 @@ module.exports = function(io) {
         }, (err)=>next(err))
         .catch((err)=>next(err));
         console.log('messages---');
-        return result;
     };
     module.exports.getMessageFromUserForUser = getMessageFromUserForUser; 
     // var socketMap = new Map(); // store userId and  socketId so that server can send messages easily.
