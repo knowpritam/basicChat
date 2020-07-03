@@ -78,8 +78,7 @@ module.exports = function(io) {
         });
         socket.on('chat_direct_old', (data) => {
             console.log('chat_direct_old');
-            console.log(data.toId);
-            console.log(data.fromId);
+            
             var messages = getMessageFromUserForUser(data.fromId, data.toId);
             
             if(userSocketMap.get(data.toId)){
@@ -93,6 +92,8 @@ module.exports = function(io) {
     
     function getMessageFromUserForUser(from, to){
         var result;
+        console.log(to);
+        console.log(from);
         Message.find({ "toId": to ,"fromId" : from}).sort({"createdAt":-1})
         .then((messages) => {
             console.log('message data');
