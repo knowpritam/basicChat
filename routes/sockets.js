@@ -22,7 +22,7 @@ module.exports = function(io) {
             console.log('Disconnected ' + socket.id);
             var userToClean = socketUserMap.get(socket.id);
             var datetime = new Date();
-            userOnlineMap.set(userToClean, datetime);
+            userOnlineMap.set(userToClean, datetime); 
             console.log("userToClean");
             console.log(userToClean);
             notifyAboutOfflineOnlineUser(userToClean);
