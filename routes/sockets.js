@@ -23,13 +23,14 @@ module.exports = function(io) {
             var userToClean = socketUserMap.get(socket.id);
             var datetime = new Date();
             userOnlineMap.set(userToClean, datetime);
+            console.log("userToClean");
+            console.log(userToClean);
+            notifyAboutOfflineUser(userToClean);
             userSocketMap.delete(userToClean);
             socketUserMap.delete(socket.id);
             console.log(userSocketMap);
             console.log(socketUserMap);
-            console.log("userToClean");
-            console.log(userToClean);
-            notifyAboutOfflineUser(userToClean);
+            
         });
 
         //User logs in the client, client passes the socket info and store that in the map
