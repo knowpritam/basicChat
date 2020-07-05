@@ -83,11 +83,12 @@ module.exports = function(io) {
             }
             else{
                 usersSet = new Set();
-                usersSet.add(data.fromId);
-                onlineConversationsMap.set(data.toId, usersSet);
-                console.log("onlineConversationsMapSet");
-                console.log(onlineConversationsMap);
             }
+            usersSet.add(data.fromId);
+            onlineConversationsMap.set(data.toId, usersSet);
+            console.log("onlineConversationsMapSet");
+            console.log(onlineConversationsMap);
+            
             if(userSocketMap.get(data.fromId)){
                 io.sockets.in(userSocketMap.get(data.fromId)).emit('user_online_status', userOnlineMap.get(data.toId));
             }
