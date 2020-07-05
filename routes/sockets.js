@@ -76,6 +76,8 @@ module.exports = function(io) {
 
         socket.on('user_online_status', (data) => {
             var usersSet;
+            console.log("onlineConversationsMapSet");
+                console.log(onlineConversationsMap);
             if(onlineConversationsMap.get(data.toId)){
                 usersSet = onlineConversationsMap.get(data.toId);
             }
