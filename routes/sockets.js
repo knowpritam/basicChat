@@ -27,6 +27,7 @@ module.exports = function(io) {
             socketUserMap.delete(socket.id);
             console.log(userSocketMap);
             console.log(socketUserMap);
+            notifyAboutOfflineUser();
         });
 
         //User logs in the client, client passes the socket info and store that in the map
@@ -87,6 +88,13 @@ module.exports = function(io) {
             }
             if(userSocketMap.get(data.fromId)){
                 io.sockets.in(userSocketMap.get(data.fromId)).emit('user_online_status', userOnlineMap.get(data.toId));
+            }
+        });
+
+        socket.on('user_online_status_clear', (data) => {
+            var usersSet;
+            if(onlineConversationsMap.get(data.toId)){
+                onlineConversationsMap.remove(data.toId);
             }
         });
     });
