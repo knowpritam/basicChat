@@ -139,6 +139,7 @@ module.exports = function(io) {
             console.log(usersSet);
             usersSet.forEach(user => {
                 console.log("insideLoop");
+                console.log(user);
                 io.sockets.in(user).emit('user_online_status', userOnlineMap.get(toUser));
             });
         }
