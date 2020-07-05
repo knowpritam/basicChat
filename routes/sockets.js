@@ -1,4 +1,5 @@
 module.exports = function(io) {
+    const express = require('express');
     var sockets = express.Router();
     const Message = require('../models/message');
 
