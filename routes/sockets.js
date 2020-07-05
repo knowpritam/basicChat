@@ -25,7 +25,7 @@ module.exports = function(io) {
             userOnlineMap.set(userToClean, datetime);
             console.log("userToClean");
             console.log(userToClean);
-            notifyAboutOfflineUser(userToClean);
+            notifyAboutOfflineOnlineUser(userToClean);
             userSocketMap.delete(userToClean);
             socketUserMap.delete(socket.id);
             console.log(userSocketMap);
@@ -41,6 +41,7 @@ module.exports = function(io) {
                 userSocketMap.set(data.userId, socket.id)
                 socketUserMap.set(socket.id, data.userId);
                 userOnlineMap.set(data.userId, "online");
+                notifyAboutOfflineOnlineUser(data.userId);
             }
             console.log(userSocketMap);
             console.log(socketUserMap);
@@ -129,7 +130,7 @@ module.exports = function(io) {
         
     };
 
-    function notifyAboutOfflineUser(toUser){
+    function notifyAboutOfflineOnlineUser(toUser){
         var usersSet;
         console.log('to user');
         console.log(toUser);
@@ -140,7 +141,7 @@ module.exports = function(io) {
             usersSet.forEach(user => {
                 console.log("insideLoop");
                 console.log(user);
-                io.sockets.in(user).emit('user_online_status', userOnlineMap.get(toUser));
+                io.sockets.in(userSocketMap.get(user)).emit('user_online_status', userOnlineMap.get(toUser));
             });
         }
     };
