@@ -122,7 +122,7 @@ module.exports = function(io) {
 
     function notifyAboutOfflineUser(toUser){
         var usersSet;
-        if(onlineConversationsMap.get(data.toId)){
+        if(onlineConversationsMap.get(toUser)){
             usersSet = onlineConversationsMap.get(data.toId);
             console.log("userSet");
             console.log(usersSet);
