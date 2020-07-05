@@ -131,7 +131,7 @@ module.exports = function(io) {
             usersSet = onlineConversationsMap.get(toUser);
             console.log("userSet");
             console.log(usersSet);
-            usersSet.array.forEach(user => {
+            usersSet.forEach(user => {
                 io.sockets.in(user).emit('user_online_status', userOnlineMap.get(toUser));
             });
         }
