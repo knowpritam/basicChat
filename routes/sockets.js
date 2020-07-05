@@ -27,6 +27,8 @@ module.exports = function(io) {
             socketUserMap.delete(socket.id);
             console.log(userSocketMap);
             console.log(socketUserMap);
+            console.log("userToClean");
+            console.log(userToClean);
             notifyAboutOfflineUser(userToClean);
         });
 
