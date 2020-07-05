@@ -5,6 +5,7 @@ module.exports = function(io) {
 
     var userSocketMap = new Map(); // store userId and  socketId so that server can send messages easily.
     var socketUserMap = new Map(); // store socketId and  userId ti beused to clear the user from userSocketMap in case of disconnection.
+    var userOnlineMap = new Map(); // store socketId and  userId ti beused to clear the user from userSocketMap in case of disconnection.
     // connect to socket and listen to client actions
     io.on('connection', function(socket) {
         console.log('a user is connected');
@@ -13,10 +14,6 @@ module.exports = function(io) {
         socket.on('connected', (data) => {
             console.log('connection data');
             console.log(data);
-            // if(data.from){
-            //     socketMap.set(data.userId, socket.id)
-            // }
-            // console.log(socketMap);
         });
         // If the user disconnects then we will remove the user and socket from maps.
         socket.on('disconnect', function () {
@@ -35,6 +32,7 @@ module.exports = function(io) {
             if(data.userId){
                 userSocketMap.set(data.userId, socket.id)
                 socketUserMap.set(socket.id, data.userId);
+                userOnlineMap.set(data.userId, "online");
             }
             console.log(userSocketMap);
             console.log(socketUserMap);
@@ -69,6 +67,12 @@ module.exports = function(io) {
         socket.on('chat_direct_old', (data) => {
             console.log('chat_direct_old');
             getMessageFromUserForUser(data);
+        });
+
+        socket.on('user_online_status', (data) => {
+            var datetime = new Date();
+            console.log(datetime);
+            userOnlineMap.set(data.userId, "online");
         });
     });
     

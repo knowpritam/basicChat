@@ -36,7 +36,8 @@ connect.then((db)=>{
   console.log('Connected to db server');
 }, (err)=>console.log(err));
 
-
+var datetime = new Date();
+console.log(datetime);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
