@@ -1,5 +1,5 @@
 module.exports = function(io) {
-
+    var sockets = express.Router();
     const Message = require('../models/message');
 
     var userSocketMap = new Map(); // store userId and  socketId so that server can send messages easily.
