@@ -23,7 +23,7 @@ var io = require('socket.io')(server, {
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var conversationsRouter = require('./routes/conversations');
-//var socketRouter = require('./routes/sockets')(io);
+var socketRouter = require('./routes/sockets')(io);
 var messagesRouter = require('./routes/messages')(io);
 
 // Mongo/mongoose connection
