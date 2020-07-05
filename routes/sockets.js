@@ -88,7 +88,10 @@ module.exports = function(io) {
             onlineConversationsMap.set(data.toId, usersSet);
             console.log("onlineConversationsMapSet");
             console.log(onlineConversationsMap);
-
+            console.log("userOnlineMap");
+            console.log(userOnlineMap);
+            console.log("data.fromId");
+            console.log(data.fromId);
             if(userSocketMap.get(data.fromId)){
                 io.sockets.in(userSocketMap.get(data.fromId)).emit('user_online_status', userOnlineMap.get(data.toId));
             }
