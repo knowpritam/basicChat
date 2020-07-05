@@ -2,10 +2,12 @@ module.exports = function(io) {
     const express = require('express');
     var sockets = express.Router();
     const Message = require('../models/message');
+    const Conversation = require('../models/conversation');
 
     var userSocketMap = new Map(); // store userId and  socketId so that server can send messages easily.
     var socketUserMap = new Map(); // store socketId and  userId ti beused to clear the user from userSocketMap in case of disconnection.
     var userOnlineMap = new Map(); // store socketId and  userId ti beused to clear the user from userSocketMap in case of disconnection.
+    var onlineConversationsMap = new Map();
     // connect to socket and listen to client actions
     io.on('connection', function(socket) {
         console.log('a user is connected');
@@ -19,6 +21,8 @@ module.exports = function(io) {
         socket.on('disconnect', function () {
             console.log('Disconnected ' + socket.id);
             var userToClean = socketUserMap.get(socket.id);
+            var datetime = new Date();
+            userOnlineMap.set(userToClean, datetime);
             userSocketMap.delete(userToClean);
             socketUserMap.delete(socket.id);
             console.log(userSocketMap);
@@ -70,9 +74,20 @@ module.exports = function(io) {
         });
 
         socket.on('user_online_status', (data) => {
-            var datetime = new Date();
-            console.log(datetime);
-            userOnlineMap.set(data.userId, "online");
+            var usersSet;
+            if(onlineConversationsMap.get(data.toId)){
+                usersSet = onlineConversationsMap.get(data.toId);
+            }
+            else{
+                usersSet = new Set();
+                usersSet.add(data.fromId);
+                onlineConversationsMap.set(data.toId, usersSet);
+                console.log("onlineConversationsMapSet");
+                console.log(onlineConversationsMap);
+            }
+            if(userSocketMap.get(data.fromId)){
+                io.sockets.in(userSocketMap.get(data.fromId)).emit('user_online_status', userOnlineMap.get(data.toId));
+            }
         });
     });
     
@@ -95,6 +110,18 @@ module.exports = function(io) {
         }, (err)=>next(err))
         .catch((err)=>next(err));
         
+    };
+
+    function notifyAboutOfflineUser(toUser){
+        var usersSet;
+        if(onlineConversationsMap.get(data.toId)){
+            usersSet = onlineConversationsMap.get(data.toId);
+            console.log("userSet");
+            console.log(usersSet);
+            usersSet.array.forEach(user => {
+                io.sockets.in(user).emit('user_online_status', userOnlineMap.get(toUser));
+            });
+        }
     };
 
     return sockets;
