@@ -56,7 +56,7 @@ module.exports = function(io) {
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct', data);
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_indirect', data);
-                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_recieved', "true");
+                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_recieved', data);
                 //io.sockets.emit('chat_direct', data);
             }
             else{ // save the messages received to server db and send it back when the receiver is online
