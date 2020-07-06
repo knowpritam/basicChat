@@ -104,7 +104,7 @@ module.exports = function(io) {
         socket.on('user_in_conversation_status_clear', (data) => {
             var usersSet;
             if(onlineConversationsMap.get(data.toId)){
-                usersSet = onlineConversationsMap.get(data.toId).remove(data.fromId);
+                usersSet = onlineConversationsMap.get(data.toId).delete(data.fromId);
                 console.log("usersSet");
                 console.log(usersSet);
             }
