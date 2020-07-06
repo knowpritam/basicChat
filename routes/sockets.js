@@ -56,7 +56,7 @@ module.exports = function(io) {
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct', data);
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_indirect', data);
-                //io.sockets.in(socketMap.get(data.from)).emit('chat_direct', data);
+                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_recieved', "true");
                 //io.sockets.emit('chat_direct', data);
             }
             else{ // save the messages received to server db and send it back when the receiver is online
@@ -101,10 +101,12 @@ module.exports = function(io) {
             }
         });
 
-        socket.on('user_online_status_clear', (data) => {
+        socket.on('user_in_conversation_status_clear', (data) => {
             var usersSet;
             if(onlineConversationsMap.get(data.toId)){
-                onlineConversationsMap.remove(data.toId);
+                usersSet = onlineConversationsMap.get(data.toId).remove(data.fromId);
+                console.log("usersSet");
+                console.log(usersSet);
             }
         });
     });
@@ -119,6 +121,7 @@ module.exports = function(io) {
             console.log(messages);
             if(userSocketMap.get(data.toId)){
                 io.sockets.in(userSocketMap.get(data.toId)).emit('chat_direct_old', messages);
+                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_recieved', "true");
             }
             //result = messages;
             Message.remove({"toId": data.toId ,"fromId" : data.fromId}).then(() =>{
