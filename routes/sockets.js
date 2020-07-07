@@ -111,8 +111,11 @@ module.exports = function(io) {
         });
 
         socket.on('msg_delivered_bulk', (data) => {
+            console.log("msg_delivered_bulk");
+            console.log(data);
+            console.log(userSocketMap);
             if(userSocketMap.get(data.fromId)){
-                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_delivered', data);
+                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_delivered_bulk', data);
             }
         });
 
