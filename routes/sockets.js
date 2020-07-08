@@ -44,18 +44,16 @@ module.exports = function(io) {
                 userOnlineMap.set(data.userId, "online");
                 notifyAboutOfflineOnlineUser(data.userId);
                 if(userDeliveredMessageMap.get(data.userId)){
-                    io.sockets.in(userSocketMap.get(data.userId)).emit('msg_delivered_bulk', userDeliveredMessageMap.get(data.userId));
+                    notifyUserForAllDeliveredMesages(data.userId);
                 }
             }
-            console.log(userSocketMap);
-            console.log(socketUserMap);
         });
         //User send a message, msg gets broadcasted to the receiver
         socket.on('chat_direct', (data) => {
             console.log('chat_direct');
-            console.log(data);
+            //console.log(data);
             
-            console.log(userSocketMap.get(data.toId));
+            //console.log(userSocketMap.get(data.toId));
             //socket.broadcast.to(socketMap.get(data.to)).emit('chat_direct', data);
             //socket.broadcast.to(socketMap.get(data.from)).emit('chat_direct', data);
             if(userSocketMap.get(data.toId)){
@@ -65,8 +63,8 @@ module.exports = function(io) {
                 //io.sockets.emit('chat_direct', data);
             }
             else{ // save the messages received to server db and send it back when the receiver is online
-                console.log('Saving offline data');
-                console.log(JSON.stringify(data));
+                // console.log('Saving offline data');
+                // console.log(JSON.stringify(data));
                 Message.create(data) // creating the message
                 .then((message)=>{
                     Message.findById(message._id)
@@ -85,7 +83,7 @@ module.exports = function(io) {
         });
 
         socket.on('user_online_status', (data) => {
-            // var usersSet;
+             var usersSet;
             // console.log("onlineConversationsMapSet");
             //     console.log(onlineConversationsMap);
             if(onlineConversationsMap.get(data.toId)){
@@ -121,12 +119,12 @@ module.exports = function(io) {
             // console.log(data);
             // console.log(userSocketMap);
             if(userSocketMap.get(data.fromId)){
-                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_delivered_bulk', data);
+                io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_delivered_bulk', data.toId);
             }
             else{
-                console.log("userDeliveredMessageMap");
+                manageUserDeliveredMessageMap(data);
+                console.log("userDeliveredMessageMap1");
                 console.log(userDeliveredMessageMap);
-                userDeliveredMessageMap.set(data.fromId, data);
             }
         });
 
@@ -170,6 +168,37 @@ module.exports = function(io) {
             });
         }
     };
+
+    function manageUserDeliveredMessageMap(data){
+        var usersSet;
+        if(userDeliveredMessageMap.get(data.fromId)){
+            usersSet = userDeliveredMessageMap.get(data.toId);
+        }
+        else{
+            usersSet = new Set();
+        }
+        usersSet.add(data.toId);
+        userDeliveredMessageMap.set(data.fromId, usersSet);
+    }
+
+    function notifyUserForAllDeliveredMesages(fromUser){
+        var usersSet;
+        console.log('userDeliveredMessageMap');
+        console.log(userDeliveredMessageMap);
+        if(userDeliveredMessageMap.get(fromUser)){
+            usersSet = userDeliveredMessageMap.get(fromUser);
+            console.log("userSet");
+            console.log(usersSet);
+            usersSet.forEach(user => {
+                console.log("insideLoop1");
+                console.log(user);
+                io.sockets.in(userSocketMap.get(user)).emit('msg_delivered_bulk', user);
+            });
+            userDeliveredMessageMap.delete(fromUser);
+            console.log('userDeliveredMessageMap');
+            console.log(userDeliveredMessageMap);
+        }
+    }
 
     return sockets;
 }
