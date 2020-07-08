@@ -192,7 +192,7 @@ module.exports = function(io) {
             usersSet.forEach(user => {
                 console.log("insideLoop1");
                 console.log(user);
-                io.sockets.in(userSocketMap.get(user)).emit('msg_delivered_bulk', user);
+                io.sockets.in(userSocketMap.get(fromUser)).emit('msg_delivered_bulk', {"fromId":fromUser, "toId":user});
             });
             userDeliveredMessageMap.delete(fromUser);
             console.log('userDeliveredMessageMap');
