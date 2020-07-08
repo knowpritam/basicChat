@@ -43,7 +43,10 @@ module.exports = function(io) {
                 socketUserMap.set(socket.id, data.userId);
                 userOnlineMap.set(data.userId, "online");
                 notifyAboutOfflineOnlineUser(data.userId);
+                console.log("userDeliveredMessageMap12login");
                 if(userDeliveredMessageMap.get(data.userId)){
+                    console.log("userDeliveredMessageMap1login");
+                    console.log(userDeliveredMessageMap);
                     notifyUserForAllDeliveredMesages(data.userId);
                 }
             }
