@@ -126,7 +126,7 @@ module.exports = function(io) {
             else{
                 console.log("userDeliveredMessageMap");
                 console.log(userDeliveredMessageMap);
-                userDeliveredMessageMap(data.fromId, data);
+                userDeliveredMessageMap.set(data.fromId, data);
             }
         });
 
