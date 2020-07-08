@@ -124,6 +124,8 @@ module.exports = function(io) {
                 io.sockets.in(userSocketMap.get(data.fromId)).emit('msg_delivered_bulk', data);
             }
             else{
+                console.log("userDeliveredMessageMap");
+                console.log(userDeliveredMessageMap);
                 userDeliveredMessageMap(data.fromId, data);
             }
         });

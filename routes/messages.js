@@ -68,19 +68,13 @@ module.exports = function(io) {
         console.log('get messagesForUser');
         Message.find({ "toId": req.params.userId }).sort({"createdAt":-1})
         .then((message) => {
-            console.log('delete messagesForUser');
-            Message.remove({"toId": req.params.userId})
-            .then((resp)=>{
-                console.log('deleted messagesForUser');
-            }, (err)=>next(err))
-            .catch((err)=>next(err));
             res.statusCode=200;
             res.setHeader('Content-Type', 'application/json');
             res.json((message));
         }, (err)=>next(err))
         .catch((err)=>next(err));
 
-        
+        console.log('get messagesForUser end');
     })
     .delete(authenticate.verifyUser, (req , res, next) => {
         console.log('delete messagesForUser');
