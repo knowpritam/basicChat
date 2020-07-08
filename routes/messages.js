@@ -65,6 +65,7 @@ module.exports = function(io) {
       
     messages.route('/messagesForUser/:userId')
     .get(authenticate.verifyUser, (req, res, next) => {
+        console.log('get messagesForUser');
         Message.find({ "toId": req.params.userId }).sort({"createdAt":-1})
         .then((message) => {
             res.statusCode=200;
@@ -72,8 +73,11 @@ module.exports = function(io) {
             res.json((message));
         }, (err)=>next(err))
         .catch((err)=>next(err));
+
+        console.log('get messagesForUser end');
     })
     .delete(authenticate.verifyUser, (req , res, next) => {
+        console.log('delete messagesForUser');
         Message.remove({"toId": req.params.userId})
         .then((resp)=>{
             res.statusCode=200;
@@ -81,6 +85,9 @@ module.exports = function(io) {
             res.json((resp));
         }, (err)=>next(err))
         .catch((err)=>next(err));
+
+
+        console.log('delete messagesForUser end');
     });
 
 
