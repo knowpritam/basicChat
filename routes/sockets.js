@@ -47,7 +47,7 @@ module.exports = function(io) {
                 if(userDeliveredMessageMap.get(data.userId)){
                     console.log("userDeliveredMessageMap1login");
                     console.log(userDeliveredMessageMap);
-                    notifyUserForAllDeliveredMesages(data.userId);
+                    setTimeout(notifyUserForAllDeliveredMesages(data.userId), 2000);
                 }
             }
         });
