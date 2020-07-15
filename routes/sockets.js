@@ -3,9 +3,11 @@ module.exports = function(io) {
     var sockets = express.Router();
     const Message = require('../models/message');
     const Conversation = require('../models/conversation');
+    const Firebase = require('../firebase');
 
     var userSocketMap = new Map(); // store userId and  socketId so that server can send messages easily.
     var socketUserMap = new Map(); // store socketId and  userId ti beused to clear the user from userSocketMap in case of disconnection.
+    var userNotifTokenMap = new Map(); 
     var userOnlineMap = new Map(); // store socketId and  userId ti beused to clear the user from userSocketMap in case of disconnection.
     var onlineConversationsMap = new Map();
     var userDeliveredMessageMap = new Map(); // store userId(from) and the delivered notif received as part of 'msg_delivered_bulk' if from user is offline. 
@@ -28,6 +30,7 @@ module.exports = function(io) {
             console.log(userToClean);
             notifyAboutOfflineOnlineUser(userToClean);
             userSocketMap.delete(userToClean);
+            userNotifTokenMap.delete(userToClean);
             socketUserMap.delete(socket.id);
             console.log(userSocketMap);
             console.log(socketUserMap);
@@ -41,6 +44,7 @@ module.exports = function(io) {
             if(data.userId){
                 userSocketMap.set(data.userId, socket.id)
                 socketUserMap.set(socket.id, data.userId);
+                userNotifTokenMap.set(data.userId, data.notifToken);
                 userOnlineMap.set(data.userId, "online");
                 notifyAboutOfflineOnlineUser(data.userId);
                 console.log("userDeliveredMessageMap12login");
@@ -80,6 +84,7 @@ module.exports = function(io) {
                     
                 });
             }
+            Firebase.postNotif(userNotifTokenMap.get(data.toId), data.fromUser, data.message);
             console.log('chat_direct    end');
         });
         socket.on('chat_direct_old', (data) => {
