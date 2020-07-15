@@ -19,7 +19,9 @@ exports.postNotif = function(registrationToken, from, message){
     }
   };
   const options =  notification_options;
-  onsole.log('sending notif');
+  console.log('sending notif');
+  console.log(registrationToken);
+  console.log(payload);
   admin.messaging().sendToDevice(registrationToken, payload, options)
   .then( response => {
     console.log('sent notif');
