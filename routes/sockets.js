@@ -30,7 +30,6 @@ module.exports = function(io) {
             console.log(userToClean);
             notifyAboutOfflineOnlineUser(userToClean);
             userSocketMap.delete(userToClean);
-            userNotifTokenMap.delete(userToClean);
             socketUserMap.delete(socket.id);
             console.log(userSocketMap);
             console.log(socketUserMap);
