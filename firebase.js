@@ -1,9 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var admin = require('./firebase-config');
-
 const app = express();
 app.use(bodyParser.json());
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./basicChat.json");
+
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://basicchat-ef861.firebaseio.com"
+});
 
 const notification_options = {
     priority: "high",

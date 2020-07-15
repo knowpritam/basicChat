@@ -84,7 +84,7 @@ module.exports = function(io) {
                     
                 });
             }
-            Firebase.postNotif(userNotifTokenMap.get(data.toId), data.fromUser, data.message);
+            Firebase.postNotif(userNotifTokenMap.get(data.toId), data.fromName, data.messageText);
             console.log('chat_direct    end');
         });
         socket.on('chat_direct_old', (data) => {
